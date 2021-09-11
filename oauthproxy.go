@@ -706,11 +706,13 @@ func (p *OAuthProxy) OAuthStart(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	loginHint := req.URL.Query().Get("login_hint")
 	callbackRedirect := p.getOAuthRedirectURI(req)
 	loginURL := p.provider.GetLoginURL(
 		callbackRedirect,
 		encodeState(csrf.HashOAuthState(), appRedirect),
 		csrf.HashOIDCNonce(),
+		loginHint,
 	)
 
 	if _, err := csrf.SetCookie(rw, req); err != nil {
